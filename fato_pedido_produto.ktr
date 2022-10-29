@@ -860,15 +860,10 @@ AND ped.PEDDTEMIS > '2020-01-01'
 
 var margem_liquida = null;
 
-if (PDPCUSTOREAL == 0)
-{
-	PDPCUSTOREAL = null;
+if (PDPUNITLIQUIDO != null &amp;&amp; PDPUNITLIQUIDO > 0) {
+	margem_liquida = 1 - (PREPCOMEDIO / PDPUNITLIQUIDO);
 }
-else {
-	if (PDPUNITLIQUIDO != null &amp;&amp; PDPUNITLIQUIDO > 0) {
-		margem_liquida = 1 - (PREPCOMEDIO / PDPUNITLIQUIDO);
-	}
-}</jsScript_script>
+</jsScript_script>
       </jsScript>
     </jsScripts>
     <fields>
@@ -879,14 +874,6 @@ else {
         <length>5</length>
         <precision>2</precision>
         <replace>N</replace>
-      </field>
-      <field>
-        <name>PDPCUSTOREAL</name>
-        <rename>PDPCUSTOREAL</rename>
-        <type>Number</type>
-        <length>20</length>
-        <precision>2</precision>
-        <replace>Y</replace>
       </field>
     </fields>
     <attributes/>
@@ -953,7 +940,6 @@ else {
       </field>
       <field>
         <name>margem_liquida</name>
-        <rename/>
       </field>
       <field>
         <name>PREPCOMEDIO</name>
