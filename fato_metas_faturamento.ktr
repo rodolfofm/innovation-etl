@@ -609,11 +609,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Calculator</from>
-      <to>MJV</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>MJV</from>
       <to>proxy2 2</to>
       <enabled>Y</enabled>
@@ -661,6 +656,21 @@
     <hop>
       <from>SR Meta 2</from>
       <to>Merge join 3</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>String operations</from>
+      <to>MJV</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Calculator</from>
+      <to>proxy2 2 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>proxy2 2 2</from>
+      <to>String operations</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -715,7 +725,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1040</xloc>
+      <xloc>672</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
@@ -825,7 +835,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>448</xloc>
+      <xloc>272</xloc>
       <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
@@ -856,7 +866,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>336</xloc>
+      <xloc>160</xloc>
       <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
@@ -887,7 +897,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>928</xloc>
+      <xloc>576</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
@@ -942,7 +952,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>448</xloc>
+      <xloc>272</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
@@ -991,7 +1001,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>560</xloc>
+      <xloc>384</xloc>
       <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1198,10 +1208,12 @@
         <jsScript_script>//Script here
 
 if (dias_uteis_passado == null)
-  if(ano_numero &lt;= ano_corrente &amp;&amp; mes_numero &lt;= mes_corrente)
+  if((ano_numero+""+mes_numero) &lt; (ano_corrente+""+mes_corrente)) {
 	dias_uteis_passado = dias_uteis;
-  else
-    dias_uteis_passado = 0;</jsScript_script>
+  }
+  else {
+    dias_uteis_passado = 0;
+  }</jsScript_script>
       </jsScript>
     </jsScripts>
     <fields>
@@ -1223,7 +1235,7 @@ if (dias_uteis_passado == null)
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1152</xloc>
+      <xloc>928</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1295,7 +1307,7 @@ if (dias_uteis_passado == null)
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
+      <xloc>384</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1311,7 +1323,7 @@ if (dias_uteis_passado == null)
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <join_type>INNER</join_type>
+    <join_type>LEFT OUTER</join_type>
     <step1>Merge join</step1>
     <step2>SR Meta 2</step2>
     <keys_1>
@@ -1657,7 +1669,7 @@ and dd.dia_nome &lt;&gt; 'Domingo'
       </output>
     </remotesteps>
     <GUI>
-      <xloc>112</xloc>
+      <xloc>48</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1715,7 +1727,7 @@ and dd.dia_nome &lt;&gt; 'Domingo'
       </output>
     </remotesteps>
     <GUI>
-      <xloc>224</xloc>
+      <xloc>160</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1770,25 +1782,32 @@ order by 1,2
     </partitioning>
     <fields>
       <field>
-        <name>ano_numero</name>
+        <name>ano_meta</name>
+        <rename>ano_numero</rename>
       </field>
       <field>
-        <name>mes_numero</name>
+        <name>mes_meta</name>
+        <rename>mes_numero</rename>
       </field>
       <field>
         <name>valor_meta</name>
+        <rename/>
       </field>
       <field>
         <name>dia_mes_quantidade</name>
+        <rename/>
       </field>
       <field>
         <name>dias_uteis</name>
+        <rename/>
       </field>
       <field>
         <name>dias_uteis_passado</name>
+        <rename/>
       </field>
       <field>
         <name>ticket_medio</name>
+        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -1866,18 +1885,23 @@ order by 1,2
     <fields>
       <field>
         <name>ano_numero</name>
+        <rename/>
       </field>
       <field>
         <name>mes_numero</name>
+        <rename/>
       </field>
       <field>
         <name>dia_mes_quantidade</name>
+        <rename/>
       </field>
       <field>
         <name>dias_uteis</name>
+        <rename/>
       </field>
       <field>
         <name>dias_uteis_passado</name>
+        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -1890,7 +1914,7 @@ order by 1,2
       </output>
     </remotesteps>
     <GUI>
-      <xloc>832</xloc>
+      <xloc>480</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1909,18 +1933,23 @@ order by 1,2
     <fields>
       <field>
         <name>ano_numero</name>
+        <rename/>
       </field>
       <field>
         <name>mes_numero</name>
+        <rename/>
       </field>
       <field>
         <name>dia_mes_quantidade</name>
+        <rename/>
       </field>
       <field>
         <name>dias_uteis</name>
+        <rename/>
       </field>
       <field>
         <name>dias_uteis_passado</name>
+        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -1933,7 +1962,154 @@ order by 1,2
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1248</xloc>
+      <xloc>1024</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>String operations</name>
+    <type>StringOperations</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <in_stream_name>mes_corrente</in_stream_name>
+        <out_stream_name/>
+        <trim_type>none</trim_type>
+        <lower_upper>none</lower_upper>
+        <padding_type>left</padding_type>
+        <pad_char>0</pad_char>
+        <pad_len>2</pad_len>
+        <init_cap>no</init_cap>
+        <mask_xml>none</mask_xml>
+        <digits>none</digits>
+        <remove_special_characters>none</remove_special_characters>
+      </field>
+      <field>
+        <in_stream_name>mes_numero</in_stream_name>
+        <out_stream_name/>
+        <trim_type>none</trim_type>
+        <lower_upper>none</lower_upper>
+        <padding_type>left</padding_type>
+        <pad_char>0</pad_char>
+        <pad_len>2</pad_len>
+        <init_cap>no</init_cap>
+        <mask_xml>none</mask_xml>
+        <digits>none</digits>
+        <remove_special_characters>none</remove_special_characters>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>848</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>proxy2 2 2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>ano_numero</name>
+        <rename/>
+      </field>
+      <field>
+        <name>mes_numero</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dia_mes_quantidade</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dias_uteis</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dias_uteis_passado</name>
+        <rename/>
+      </field>
+      <field>
+        <name>data_corrente</name>
+        <rename/>
+      </field>
+      <field>
+        <name>ano_corrente</name>
+        <rename/>
+      </field>
+      <field>
+        <name>mes_corrente</name>
+        <rename/>
+      </field>
+      <select_unspecified>N</select_unspecified>
+      <meta>
+        <name>mes_corrente</name>
+        <rename>mes_corrente</rename>
+        <type>String</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>mes_numero</name>
+        <rename>mes_numero</rename>
+        <type>String</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>752</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
