@@ -1524,7 +1524,7 @@ if (dias_uteis_passado == null)
     <connection>INNOVATION-DW</connection>
     <sql>select dd.dia_data, dd.dia_nome  , sum(fp.valor_total ) as valor_total
 from public.dim_data dd 
-		left join public.fato_pedido fp on dd.dia_data = fp.data_saida 
+		left join public.fato_pedido fp on dd.dia_data = fp.data_baixa
 where dd.cod_ano >= extract(year from now())  and dd.cod_ano &lt;= extract(year from now())+1
 group by 1,2
 order by 1</sql>
