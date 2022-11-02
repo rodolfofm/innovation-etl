@@ -580,7 +580,7 @@
     </hop>
     <hop>
       <from>Filter rows</from>
-      <to>Group by 2</to>
+      <to>Group Dias Uteis</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -589,13 +589,8 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Group by 2</from>
+      <from>Group Dias Uteis</from>
       <to>Merge join 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Merge join 2</from>
-      <to>proxy2</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -605,7 +600,7 @@
     </hop>
     <hop>
       <from>Get system info 2</from>
-      <to>Calculator</to>
+      <to>Calc Extrai Ano Mes</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -664,7 +659,7 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Calculator</from>
+      <from>Calc Extrai Ano Mes</from>
       <to>proxy2 2 2</to>
       <enabled>Y</enabled>
     </hop>
@@ -673,9 +668,39 @@
       <to>String operations</to>
       <enabled>Y</enabled>
     </hop>
+    <hop>
+      <from>Sort rows 2 2</from>
+      <to>Group Count Feriados</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>FeriadosInnovation</from>
+      <to>Calc Extrai Ano Mes 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Calc Extrai Ano Mes 2</from>
+      <to>Sort rows 2 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Merge join 2</from>
+      <to>join Feriados</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>join Feriados</from>
+      <to>proxy2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Group Count Feriados</from>
+      <to>join Feriados</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
   <step>
-    <name>Calculator</name>
+    <name>Calc Extrai Ano Mes</name>
     <type>Calculator</type>
     <description/>
     <distribute>Y</distribute>
@@ -725,8 +750,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>672</xloc>
-      <yloc>64</yloc>
+      <xloc>784</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -782,7 +807,7 @@
     </remotesteps>
     <GUI>
       <xloc>480</xloc>
-      <yloc>480</yloc>
+      <yloc>608</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -797,7 +822,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <send_true_to>Group by 2</send_true_to>
+    <send_true_to>Group Dias Uteis</send_true_to>
     <send_false_to/>
     <compare>
       <condition>
@@ -836,7 +861,7 @@
     </remotesteps>
     <GUI>
       <xloc>272</xloc>
-      <yloc>160</yloc>
+      <yloc>272</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -867,7 +892,7 @@
     </remotesteps>
     <GUI>
       <xloc>160</xloc>
-      <yloc>160</yloc>
+      <yloc>272</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -897,8 +922,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>576</xloc>
-      <yloc>64</yloc>
+      <xloc>672</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -953,12 +978,12 @@
     </remotesteps>
     <GUI>
       <xloc>272</xloc>
-      <yloc>64</yloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Group by 2</name>
+    <name>Group Dias Uteis</name>
     <type>GroupBy</type>
     <description/>
     <distribute>Y</distribute>
@@ -1002,7 +1027,7 @@
     </remotesteps>
     <GUI>
       <xloc>384</xloc>
-      <yloc>160</yloc>
+      <yloc>272</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1042,7 +1067,7 @@
     </remotesteps>
     <GUI>
       <xloc>352</xloc>
-      <yloc>480</yloc>
+      <yloc>608</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1105,7 +1130,7 @@
     </remotesteps>
     <GUI>
       <xloc>736</xloc>
-      <yloc>480</yloc>
+      <yloc>608</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1173,6 +1198,11 @@
         <rename>ticket_medio</rename>
         <update>Y</update>
       </value>
+      <value>
+        <name>quantidade_feriados</name>
+        <rename>quantidade_feriados</rename>
+        <update>Y</update>
+      </value>
     </lookup>
     <attributes/>
     <cluster_schema/>
@@ -1184,7 +1214,7 @@
     </remotesteps>
     <GUI>
       <xloc>896</xloc>
-      <yloc>304</yloc>
+      <yloc>432</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1207,6 +1237,11 @@
         <jsScript_name>Script 1</jsScript_name>
         <jsScript_script>//Script here
 
+if (quantidade_feriados == null) 
+	quantidade_feriados = 0;
+
+dias_uteis = dias_uteis - quantidade_feriados;
+
 if (dias_uteis_passado == null)
   if((ano_numero+""+mes_numero) &lt; (ano_corrente+""+mes_corrente)) {
 	dias_uteis_passado = dias_uteis;
@@ -1225,6 +1260,22 @@ if (dias_uteis_passado == null)
         <precision>-1</precision>
         <replace>Y</replace>
       </field>
+      <field>
+        <name>quantidade_feriados</name>
+        <rename>quantidade_feriados</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>Y</replace>
+      </field>
+      <field>
+        <name>dias_uteis</name>
+        <rename>dias_uteis</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>Y</replace>
+      </field>
     </fields>
     <attributes/>
     <cluster_schema/>
@@ -1235,8 +1286,8 @@ if (dias_uteis_passado == null)
       </output>
     </remotesteps>
     <GUI>
-      <xloc>928</xloc>
-      <yloc>64</yloc>
+      <xloc>1056</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1272,7 +1323,7 @@ if (dias_uteis_passado == null)
     </remotesteps>
     <GUI>
       <xloc>368</xloc>
-      <yloc>304</yloc>
+      <yloc>432</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1289,7 +1340,7 @@ if (dias_uteis_passado == null)
     </partitioning>
     <join_type>LEFT OUTER</join_type>
     <step1>Group by</step1>
-    <step2>Group by 2</step2>
+    <step2>Group Dias Uteis</step2>
     <keys_1>
       <key>ano_numero</key>
       <key>mes_numero</key>
@@ -1308,7 +1359,7 @@ if (dias_uteis_passado == null)
     </remotesteps>
     <GUI>
       <xloc>384</xloc>
-      <yloc>64</yloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1344,7 +1395,7 @@ if (dias_uteis_passado == null)
     </remotesteps>
     <GUI>
       <xloc>576</xloc>
-      <yloc>304</yloc>
+      <yloc>432</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1455,7 +1506,7 @@ if (dias_uteis_passado == null)
     </remotesteps>
     <GUI>
       <xloc>112</xloc>
-      <yloc>304</yloc>
+      <yloc>432</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1492,7 +1543,7 @@ order by 1</sql>
     </remotesteps>
     <GUI>
       <xloc>112</xloc>
-      <yloc>480</yloc>
+      <yloc>608</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1542,7 +1593,7 @@ order by 1</sql>
     </remotesteps>
     <GUI>
       <xloc>240</xloc>
-      <yloc>304</yloc>
+      <yloc>432</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1592,7 +1643,7 @@ order by 1</sql>
     </remotesteps>
     <GUI>
       <xloc>416</xloc>
-      <yloc>384</yloc>
+      <yloc>512</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1634,7 +1685,7 @@ order by 1</sql>
     </remotesteps>
     <GUI>
       <xloc>240</xloc>
-      <yloc>480</yloc>
+      <yloc>608</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1670,7 +1721,7 @@ and dd.dia_nome &lt;&gt; 'Domingo'
     </remotesteps>
     <GUI>
       <xloc>48</xloc>
-      <yloc>64</yloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1728,242 +1779,7 @@ and dd.dia_nome &lt;&gt; 'Domingo'
     </remotesteps>
     <GUI>
       <xloc>160</xloc>
-      <yloc>64</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>TicketMedioMensal</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>INNOVATION-DW</connection>
-    <sql>select extract(year from fp.data_saida) as ano, extract(month from fp.data_saida) as mes, sum(fp.valor_total ) / count(fp.id) as ticket_medio
-from public.fato_pedido fp  
-where extract(year from fp.data_saida) >= extract(year from now())  and extract(year from fp.data_saida) &lt;= extract(year from now())+1
-group by 1,2
-order by 1,2
-</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>288</xloc>
-      <yloc>384</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>proxy</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>ano_meta</name>
-        <rename>ano_numero</rename>
-      </field>
-      <field>
-        <name>mes_meta</name>
-        <rename>mes_numero</rename>
-      </field>
-      <field>
-        <name>valor_meta</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dia_mes_quantidade</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dias_uteis</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dias_uteis_passado</name>
-        <rename/>
-      </field>
-      <field>
-        <name>ticket_medio</name>
-        <rename/>
-      </field>
-      <select_unspecified>N</select_unspecified>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>736</xloc>
-      <yloc>304</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>proxy 2</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>dia_data</name>
-        <rename>data_faturado</rename>
-      </field>
-      <field>
-        <name>dia_nome</name>
-        <rename>data_dia_nome</rename>
-      </field>
-      <field>
-        <name>valor_total</name>
-        <rename>valor_faturado</rename>
-      </field>
-      <field>
-        <name>ano_numero</name>
-      </field>
-      <field>
-        <name>mes_numero</name>
-      </field>
-      <select_unspecified>N</select_unspecified>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>608</xloc>
-      <yloc>480</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>proxy2</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>ano_numero</name>
-        <rename/>
-      </field>
-      <field>
-        <name>mes_numero</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dia_mes_quantidade</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dias_uteis</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dias_uteis_passado</name>
-        <rename/>
-      </field>
-      <select_unspecified>N</select_unspecified>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>480</xloc>
-      <yloc>64</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>proxy2 2</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>ano_numero</name>
-        <rename/>
-      </field>
-      <field>
-        <name>mes_numero</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dia_mes_quantidade</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dias_uteis</name>
-        <rename/>
-      </field>
-      <field>
-        <name>dias_uteis_passado</name>
-        <rename/>
-      </field>
-      <select_unspecified>N</select_unspecified>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1024</xloc>
-      <yloc>64</yloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -2015,8 +1831,255 @@ order by 1,2
       </output>
     </remotesteps>
     <GUI>
-      <xloc>848</xloc>
-      <yloc>64</yloc>
+      <xloc>976</xloc>
+      <yloc>176</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>TicketMedioMensal</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>INNOVATION-DW</connection>
+    <sql>select extract(year from fp.data_saida) as ano, extract(month from fp.data_saida) as mes, sum(fp.valor_total ) / count(fp.id) as ticket_medio
+from public.fato_pedido fp  
+where extract(year from fp.data_saida) >= extract(year from now())  and extract(year from fp.data_saida) &lt;= extract(year from now())+1
+group by 1,2
+order by 1,2
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>288</xloc>
+      <yloc>512</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>proxy</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>ano_meta</name>
+        <rename>ano_numero</rename>
+      </field>
+      <field>
+        <name>mes_meta</name>
+        <rename>mes_numero</rename>
+      </field>
+      <field>
+        <name>valor_meta</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dia_mes_quantidade</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dias_uteis</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dias_uteis_passado</name>
+        <rename/>
+      </field>
+      <field>
+        <name>ticket_medio</name>
+        <rename/>
+      </field>
+      <field>
+        <name>quantidade_feriados</name>
+        <rename/>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>736</xloc>
+      <yloc>432</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>proxy 2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>dia_data</name>
+        <rename>data_faturado</rename>
+      </field>
+      <field>
+        <name>dia_nome</name>
+        <rename>data_dia_nome</rename>
+      </field>
+      <field>
+        <name>valor_total</name>
+        <rename>valor_faturado</rename>
+      </field>
+      <field>
+        <name>ano_numero</name>
+      </field>
+      <field>
+        <name>mes_numero</name>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>608</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>proxy2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>ano_numero</name>
+        <rename/>
+      </field>
+      <field>
+        <name>mes_numero</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dia_mes_quantidade</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dias_uteis</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dias_uteis_passado</name>
+        <rename/>
+      </field>
+      <field>
+        <name>quantidade_feriados</name>
+        <rename/>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>592</xloc>
+      <yloc>176</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>proxy2 2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>ano_numero</name>
+        <rename/>
+      </field>
+      <field>
+        <name>mes_numero</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dia_mes_quantidade</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dias_uteis</name>
+        <rename/>
+      </field>
+      <field>
+        <name>dias_uteis_passado</name>
+        <rename/>
+      </field>
+      <field>
+        <name>quantidade_feriados</name>
+        <rename/>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1152</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -2064,6 +2127,10 @@ order by 1,2
         <name>mes_corrente</name>
         <rename/>
       </field>
+      <field>
+        <name>quantidade_feriados</name>
+        <rename/>
+      </field>
       <select_unspecified>N</select_unspecified>
       <meta>
         <name>mes_corrente</name>
@@ -2109,8 +2176,298 @@ order by 1,2
       </output>
     </remotesteps>
     <GUI>
-      <xloc>752</xloc>
-      <yloc>64</yloc>
+      <xloc>880</xloc>
+      <yloc>176</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>FeriadosInnovation</name>
+    <type>ExcelInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <header>Y</header>
+    <noempty>Y</noempty>
+    <stoponempty>Y</stoponempty>
+    <filefield/>
+    <sheetfield/>
+    <sheetrownumfield/>
+    <rownumfield/>
+    <sheetfield/>
+    <filefield/>
+    <limit>0</limit>
+    <encoding/>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <accept_filenames>N</accept_filenames>
+    <accept_field/>
+    <accept_stepname/>
+    <file>
+      <name>${Internal.Entry.Current.Directory}\meta-2022.xlsx</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>data</name>
+        <type>Date</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format>dd/MM/yyyy</format>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>Nome</name>
+        <type>String</type>
+        <length>1000</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+    </fields>
+    <sheets>
+      <sheet>
+        <name>Feriados</name>
+        <startrow>0</startrow>
+        <startcol>0</startcol>
+      </sheet>
+    </sheets>
+    <strict_types>N</strict_types>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <spreadsheet_type>POI</spreadsheet_type>
+    <password>Encrypted </password>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>64</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Group Count Feriados</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <all_rows>N</all_rows>
+    <ignore_aggregate>N</ignore_aggregate>
+    <field_ignore/>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>grp</prefix>
+    <add_linenr>N</add_linenr>
+    <linenr_fieldname/>
+    <give_back_row>N</give_back_row>
+    <group>
+      <field>
+        <name>ano_feriado</name>
+      </field>
+      <field>
+        <name>mes_feriado</name>
+      </field>
+    </group>
+    <fields>
+      <field>
+        <aggregate>quantidade_feriados</aggregate>
+        <subject>data</subject>
+        <type>COUNT_ALL</type>
+        <valuefield/>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Sort rows 2 2</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>ano_feriado</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+      <field>
+        <name>mes_feriado</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Calc Extrai Ano Mes 2</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <failIfNoFile>Y</failIfNoFile>
+    <calculation>
+      <field_name>ano_feriado</field_name>
+      <calc_type>YEAR_OF_DATE</calc_type>
+      <field_a>data</field_a>
+      <field_b/>
+      <field_c/>
+      <value_type>Integer</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <remove>N</remove>
+      <conversion_mask/>
+      <decimal_symbol/>
+      <grouping_symbol/>
+      <currency_symbol/>
+    </calculation>
+    <calculation>
+      <field_name>mes_feriado</field_name>
+      <calc_type>MONTH_OF_DATE</calc_type>
+      <field_a>data</field_a>
+      <field_b/>
+      <field_c/>
+      <value_type>Integer</value_type>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+      <remove>N</remove>
+      <conversion_mask/>
+      <decimal_symbol/>
+      <grouping_symbol/>
+      <currency_symbol/>
+    </calculation>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>join Feriados</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <join_type>LEFT OUTER</join_type>
+    <step1>Merge join 2</step1>
+    <step2>Group Count Feriados</step2>
+    <keys_1>
+      <key>ano_numero</key>
+      <key>mes_numero</key>
+    </keys_1>
+    <keys_2>
+      <key>ano_feriado</key>
+      <key>mes_feriado</key>
+    </keys_2>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>496</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
