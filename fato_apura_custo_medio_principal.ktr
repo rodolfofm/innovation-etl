@@ -1350,7 +1350,7 @@
     <connection>INNOVATION-DW</connection>
     <sql>select distinct to_char(fp.data_baixa,'YYYY-MM') as ano_mes
 from public.fato_pedido fp 
-where extract (year from fp.data_baixa)>=2020
+where extract (year from fp.data_baixa)>=2019
 order by 1</sql>
     <limit/>
     <lookup/>
