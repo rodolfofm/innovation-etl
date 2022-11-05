@@ -644,7 +644,17 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
+      <from>Custo Medio</from>
+      <to>Write to log</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
       <from>Custo Medio 2 3</from>
+      <to>Write to log</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Custo Medio 2</from>
       <to>Write to log</to>
       <enabled>Y</enabled>
     </hop>
@@ -655,16 +665,6 @@
     </hop>
     <hop>
       <from>Custo Medio 2 2</from>
-      <to>Write to log</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Custo Medio 2</from>
-      <to>Write to log</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Custo Medio</from>
       <to>Write to log</to>
       <enabled>Y</enabled>
     </hop>
@@ -1740,6 +1740,44 @@ and not exists (
     </GUI>
   </step>
   <step>
+    <name>Write to log</name>
+    <type>WriteToLog</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <loglevel>log_level_minimal</loglevel>
+    <displayHeader>Y</displayHeader>
+    <limitRows>N</limitRows>
+    <limitRowsNumber>0</limitRowsNumber>
+    <logmessage/>
+    <fields>
+      <field>
+        <name>ExecutionLogChannelId</name>
+      </field>
+      <field>
+        <name>ExecutionTime</name>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>752</xloc>
+      <yloc>304</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>int/upd custo medio</name>
     <type>InsertUpdate</type>
     <description/>
@@ -1800,44 +1838,6 @@ and not exists (
     <GUI>
       <xloc>1328</xloc>
       <yloc>144</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Write to log</name>
-    <type>WriteToLog</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <loglevel>log_level_minimal</loglevel>
-    <displayHeader>Y</displayHeader>
-    <limitRows>N</limitRows>
-    <limitRowsNumber>0</limitRowsNumber>
-    <logmessage/>
-    <fields>
-      <field>
-        <name>ExecutionLogChannelId</name>
-      </field>
-      <field>
-        <name>ExecutionTime</name>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>752</xloc>
-      <yloc>304</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
