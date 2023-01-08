@@ -651,6 +651,95 @@
     </hop>
   </order>
   <step>
+    <name>Database lookup</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>INNOVATION-DW</connection>
+    <cache>Y</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>5000</cache_size>
+    <lookup>
+      <schema>public</schema>
+      <table>fato_produto_custo_medio</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>ano_mes</name>
+        <field>ano_mes</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>PROCODIGO</name>
+        <field>produto_id</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>custo_medio</name>
+        <rename>custo_medio</rename>
+        <default>-1</default>
+        <type>BigNumber</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>512</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Filter rows</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <send_true_to>proxy1</send_true_to>
+    <send_false_to>sv</send_false_to>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <leftvalue>PEDDTBAIXA</leftvalue>
+        <function>&gt;</function>
+        <rightvalue>end_of_month</rightvalue>
+      </condition>
+    </compare>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>368</xloc>
+      <yloc>80</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Ins fato_pedido_produto</name>
     <type>TableOutput</type>
     <description/>
@@ -828,6 +917,43 @@
     </GUI>
   </step>
   <step>
+    <name>Join rows (cartesian product)</name>
+    <type>JoinRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <cache_size>500</cache_size>
+    <main/>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <leftvalue/>
+        <function>=</function>
+        <rightvalue/>
+      </condition>
+    </compare>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>80</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Ler pedido (PDPRD)</name>
     <type>TableInput</type>
     <description/>
@@ -860,7 +986,7 @@ FROM PDPRD i
 WHERE ped.EMPCODIGO = 2 
 AND ped.PEDSITPED='F'
 AND ped.PEDDTBAIXA >= '2019-01-01'
-</sql>
+AND exists(SELECT 1 FROM PDPRD it WHERE it.ID_PEDIDO=ped.ID_PEDIDO 	AND i.FISCODIGO IN ('6.102','5.102','6.108','6.110'))</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -928,6 +1054,39 @@ if (PDPUNITLIQUIDO != null &amp;&amp; PDPUNITLIQUIDO > 0) {
     <GUI>
       <xloc>656</xloc>
       <yloc>80</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>obter DataUltMesAnterior</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>INNOVATION-DW</connection>
+    <sql>SELECT (date_trunc('month', now()- interval '1 month') + interval '1 month' - interval '1 day')::date
+AS end_of_month;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1020,254 +1179,6 @@ if (PDPUNITLIQUIDO != null &amp;&amp; PDPUNITLIQUIDO > 0) {
     </GUI>
   </step>
   <step>
-    <name>obter DataUltMesAnterior</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>INNOVATION-DW</connection>
-    <sql>SELECT (date_trunc('month', now()- interval '1 month') + interval '1 month' - interval '1 day')::date
-AS end_of_month;</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>208</xloc>
-      <yloc>192</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Filter rows</name>
-    <type>FilterRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <send_true_to>proxy1</send_true_to>
-    <send_false_to>sv</send_false_to>
-    <compare>
-      <condition>
-        <negated>N</negated>
-        <leftvalue>PEDDTBAIXA</leftvalue>
-        <function>&gt;</function>
-        <rightvalue>end_of_month</rightvalue>
-      </condition>
-    </compare>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>368</xloc>
-      <yloc>80</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Join rows (cartesian product)</name>
-    <type>JoinRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <directory>%%java.io.tmpdir%%</directory>
-    <prefix>out</prefix>
-    <cache_size>500</cache_size>
-    <main/>
-    <compare>
-      <condition>
-        <negated>N</negated>
-        <leftvalue/>
-        <function>=</function>
-        <rightvalue/>
-      </condition>
-    </compare>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>208</xloc>
-      <yloc>80</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>sv</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>PDPSEQ</name>
-        <rename/>
-      </field>
-      <field>
-        <name>ID_PEDIDO</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PROCODIGO</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PDPUNITLIQUIDO</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PDPCUSTOREAL</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PDPPCOTABELA</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PDPPCOVENDA</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PDPQTDADE</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PDPVRFRETE</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PREPCOMEDIO</name>
-        <rename/>
-      </field>
-      <field>
-        <name>PEDDTBAIXA</name>
-        <rename/>
-      </field>
-      <select_unspecified>N</select_unspecified>
-      <meta>
-        <name>PEDDTBAIXA</name>
-        <rename>ano_mes</rename>
-        <type>String</type>
-        <length>-2</length>
-        <precision>-2</precision>
-        <conversion_mask>yyyy-MM</conversion_mask>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>368</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Database lookup</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>INNOVATION-DW</connection>
-    <cache>Y</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>5000</cache_size>
-    <lookup>
-      <schema>public</schema>
-      <table>fato_produto_custo_medio</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>ano_mes</name>
-        <field>ano_mes</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>PROCODIGO</name>
-        <field>produto_id</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>custo_medio</name>
-        <rename>custo_medio</rename>
-        <default>-1</default>
-        <type>BigNumber</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>512</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>proxy1</name>
     <type>SelectValues</type>
     <description/>
@@ -1281,43 +1192,33 @@ AS end_of_month;</sql>
     <fields>
       <field>
         <name>PDPSEQ</name>
-        <rename/>
       </field>
       <field>
         <name>ID_PEDIDO</name>
-        <rename/>
       </field>
       <field>
         <name>PROCODIGO</name>
-        <rename/>
       </field>
       <field>
         <name>PDPUNITLIQUIDO</name>
-        <rename/>
       </field>
       <field>
         <name>PDPCUSTOREAL</name>
-        <rename/>
       </field>
       <field>
         <name>PDPPCOTABELA</name>
-        <rename/>
       </field>
       <field>
         <name>PDPPCOVENDA</name>
-        <rename/>
       </field>
       <field>
         <name>PDPQTDADE</name>
-        <rename/>
       </field>
       <field>
         <name>PDPVRFRETE</name>
-        <rename/>
       </field>
       <field>
         <name>PREPCOMEDIO</name>
-        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -1349,39 +1250,30 @@ AS end_of_month;</sql>
     <fields>
       <field>
         <name>PDPSEQ</name>
-        <rename/>
       </field>
       <field>
         <name>ID_PEDIDO</name>
-        <rename/>
       </field>
       <field>
         <name>PROCODIGO</name>
-        <rename/>
       </field>
       <field>
         <name>PDPUNITLIQUIDO</name>
-        <rename/>
       </field>
       <field>
         <name>PDPCUSTOREAL</name>
-        <rename/>
       </field>
       <field>
         <name>PDPPCOTABELA</name>
-        <rename/>
       </field>
       <field>
         <name>PDPPCOVENDA</name>
-        <rename/>
       </field>
       <field>
         <name>PDPQTDADE</name>
-        <rename/>
       </field>
       <field>
         <name>PDPVRFRETE</name>
-        <rename/>
       </field>
       <field>
         <name>custo_medio</name>
@@ -1399,6 +1291,84 @@ AS end_of_month;</sql>
     </remotesteps>
     <GUI>
       <xloc>656</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>sv</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>PDPSEQ</name>
+      </field>
+      <field>
+        <name>ID_PEDIDO</name>
+      </field>
+      <field>
+        <name>PROCODIGO</name>
+      </field>
+      <field>
+        <name>PDPUNITLIQUIDO</name>
+      </field>
+      <field>
+        <name>PDPCUSTOREAL</name>
+      </field>
+      <field>
+        <name>PDPPCOTABELA</name>
+      </field>
+      <field>
+        <name>PDPPCOVENDA</name>
+      </field>
+      <field>
+        <name>PDPQTDADE</name>
+      </field>
+      <field>
+        <name>PDPVRFRETE</name>
+      </field>
+      <field>
+        <name>PREPCOMEDIO</name>
+      </field>
+      <field>
+        <name>PEDDTBAIXA</name>
+      </field>
+      <select_unspecified>N</select_unspecified>
+      <meta>
+        <name>PEDDTBAIXA</name>
+        <rename>ano_mes</rename>
+        <type>String</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask>yyyy-MM</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>368</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
